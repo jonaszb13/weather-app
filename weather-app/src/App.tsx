@@ -1,34 +1,35 @@
+import { useEffect, useState } from 'react';
+
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?q=Ilsede&appid=f4fb903a796a6c1db7dcabe7f7c39d59&units=metric';
+
 interface WeaterData {
-  success: boolean
-  name: string
+  name: string;
   main: {
-    temp: number
+    temp: number;
   }
 }
 
-function App() {
+export default function Infot() {
+  const [infos, setInfos] = useState<WeaterData>([]);
 
-  function getWeatherData(): Promise<WeaterData[]> {
-    return fetch('https://api.openweathermap.org/data/2.5/weather?q=Ilsede&appid=f4fb903a796a6c1db7dcabe7f7c39d59', {
-      method: 'GET',
-      headers: {
-      },
+  useEffect(() => {
+    const fetchInfos = async () => {
+      const response = await fetch(`${BASE_URL}`);
+      const infos = (await response.json()) as WeaterData;
+      setInfos(infos);
+    };
 
-    })
+    fetchInfos();
+  }, []);
 
-      .then(res => res.json())
-      .then(res => {
-        return res as WeaterData[];
-      });
-  }
 
-  console.log(getWeatherData())
-  
   return (
-    <>
-    
-    </>
-  )
+    <div>
+      <h1>Weather App</h1>
+      <ul>
+        <p>{infos.name}</p>
+        <p>{infos.main.temp} °C</p>
+      </ul>
+    </div>
+  );
 }
-
-export default App
